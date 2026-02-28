@@ -25,31 +25,32 @@ export default function AiPopup() {
       {/* Main Glass Container */}
       <div className="relative w-full bg-[#0A0A0A]/95 backdrop-blur-2xl rounded-2xl overflow-visible border border-white/10 shadow-2xl shadow-white/5">
         {/* 1. Top Bar: IPFT Protection Policy */}
-        <div className="flex items-center justify-between px-6 py-3 border-b border-white/10 bg-white/[0.02]">
-          <div className="flex items-center gap-2 text-sm text-gray-400">
-            {/* Shield Icon */}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
-            </svg>
-            <span>
-              Your ideas are protected by{" "}
-              <button className="px-3 py-1 text-xs font-medium text-white bg-white/10 border border-white/20 rounded-full hover:bg-white/20 hover:border-white/40 hover:shadow-[0_0_10px_rgba(255,255,255,0.2)] transition-all duration-200">
-                IPFT Policy
-              </button>
-            </span>
-          </div>
+        <div className="flex flex-wrap items-center justify-center gap-2 px-4 py-3 border-b border-white/10 bg-white/[0.02]">
+          {/* Shield Icon (Added shrink-0 so it never squishes) */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="shrink-0 text-gray-400"
+          >
+            <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+          </svg>
 
-          {/* IPFT Policy Clickable Pill */}
+          {/* Text */}
+          <span className="text-xs sm:text-sm text-gray-400">
+            Your ideas are protected by
+          </span>
+
+          {/* IPFT Policy Clickable Pill (Added whitespace-nowrap so the text inside doesn't break) */}
+          <button className="px-3 py-1 text-[10px] sm:text-xs font-medium text-white bg-white/10 border border-white/20 rounded-full hover:bg-white/20 hover:border-white/40 hover:shadow-[0_0_10px_rgba(255,255,255,0.2)] transition-all duration-200 whitespace-nowrap cursor-pointer">
+            IPFT Policy
+          </button>
         </div>
 
         {/* 2. Main Input Area */}

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { ArrowRight, Link, Zap } from "lucide-react";
+import { ArrowRight, Link, Layers } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,9 +14,30 @@ export default function RadialOrbitalTimeline({ timelineData }) {
   const [centerOffset, setCenterOffset] = useState({ x: 0, y: 0 });
   const [activeNodeId, setActiveNodeId] = useState(null);
 
+  // DYNAMIC SCALE STATE: This holds the perfect size for the user's specific screen
+  const [dynamicScale, setDynamicScale] = useState(1);
+
   const containerRef = useRef(null);
   const orbitRef = useRef(null);
   const nodeRefs = useRef({});
+
+  // RESIZE OBSERVER: Automatically measures the screen and scales perfectly
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const { width, height } = entry.contentRect;
+        // 550px is the natural width of the orbital ring.
+        // This calculates the exact fraction needed to fit the screen.
+        const perfectScale = Math.min(width / 550, height / 550, 1.1);
+        setDynamicScale(perfectScale);
+      }
+    });
+
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   const handleContainerClick = (e) => {
     if (e.target === containerRef.current || e.target === orbitRef.current) {
@@ -66,7 +87,7 @@ export default function RadialOrbitalTimeline({ timelineData }) {
     if (autoRotate && viewMode === "orbital") {
       rotationTimer = setInterval(() => {
         setRotationAngle((prev) => {
-          const newAngle = (prev + 0.2) % 360; // Slightly slower rotation for a massive object
+          const newAngle = (prev + 0.2) % 360;
           return Number(newAngle.toFixed(3));
         });
       }, 50);
@@ -91,8 +112,7 @@ export default function RadialOrbitalTimeline({ timelineData }) {
 
   const calculateNodePosition = (index, total) => {
     const angle = ((index / total) * 360 + rotationAngle) % 360;
-    // THE FIX: Massively increased the radius from 160 to 240
-    const radius = 240;
+    const radius = 240; // Massive radius
     const radian = (angle * Math.PI) / 180;
 
     const x = radius * Math.cos(radian) + centerOffset.x;
@@ -118,12 +138,15 @@ export default function RadialOrbitalTimeline({ timelineData }) {
     return relatedItems.includes(itemId);
   };
 
+  // UPDATED STYLES: Safely handles both the old keys and the new "required/optional" keys
   const getStatusStyles = (status) => {
-    switch (status) {
+    const lowerStatus = status?.toLowerCase() || "";
+    switch (lowerStatus) {
+      case "required":
       case "completed":
-        return "text-white bg-black border-white";
+        return "text-black bg-white border-white";
+      case "optional":
       case "in-progress":
-        return "text-black bg-white border-black";
       case "pending":
         return "text-white bg-black/40 border-white/50";
       default:
@@ -137,9 +160,11 @@ export default function RadialOrbitalTimeline({ timelineData }) {
       ref={containerRef}
       onClick={handleContainerClick}
     >
-      {/* THE FIX: Responsive scaling. Shrinks to 65% on phones so it doesn't overflow,
-          grows to 100% on laptops, and 110% on large monitors */}
-      <div className="relative w-full h-full flex items-center justify-center scale-[0.65] sm:scale-[0.80] md:scale-90 lg:scale-100 xl:scale-110 transition-transform duration-500">
+      {/* APPLIED DYNAMIC SCALE: Automatically resizes to fit any screen perfectly */}
+      <div
+        className="relative w-full h-full flex items-center justify-center transition-transform duration-300 origin-center"
+        style={{ transform: `scale(${dynamicScale})` }}
+      >
         <div
           className="absolute w-full h-full flex items-center justify-center"
           ref={orbitRef}
@@ -158,7 +183,6 @@ export default function RadialOrbitalTimeline({ timelineData }) {
             <div className="w-12 h-12 rounded-full bg-black/80 backdrop-blur-md"></div>
           </div>
 
-          {/* THE FIX: Ring diameter increased to match the 240 radius (480px total) */}
           <div className="absolute w-[480px] h-[480px] rounded-full border border-white/10"></div>
 
           {timelineData.map((item, index) => {
@@ -167,6 +191,10 @@ export default function RadialOrbitalTimeline({ timelineData }) {
             const isRelated = isRelatedToActive(item.id);
             const isPulsing = pulseEffect[item.id];
             const Icon = item.icon;
+
+            // CRASH PREVENTION: Safely grabs either 'allocation' or 'energy', defaults to 0 if neither exist.
+            const allocationValue = item.allocation || item.energy || 0;
+            const displayStatus = item.status || "Planned";
 
             const nodeStyle = {
               transform: `translate(${position.x}px, ${position.y}px)`,
@@ -191,10 +219,10 @@ export default function RadialOrbitalTimeline({ timelineData }) {
                   }`}
                   style={{
                     background: `radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%)`,
-                    width: `${item.energy * 0.5 + 40}px`,
-                    height: `${item.energy * 0.5 + 40}px`,
-                    left: `-${(item.energy * 0.5 + 40 - 40) / 2}px`,
-                    top: `-${(item.energy * 0.5 + 40 - 40) / 2}px`,
+                    width: `${allocationValue * 0.5 + 40}px`,
+                    height: `${allocationValue * 0.5 + 40}px`,
+                    left: `-${(allocationValue * 0.5 + 40 - 40) / 2}px`,
+                    top: `-${(allocationValue * 0.5 + 40 - 40) / 2}px`,
                   }}
                 ></div>
 
@@ -241,10 +269,10 @@ export default function RadialOrbitalTimeline({ timelineData }) {
                       <div className="flex justify-between items-center">
                         <Badge
                           className={`px-2 py-1 text-[10px] tracking-wider uppercase ${getStatusStyles(
-                            item.status,
+                            displayStatus,
                           )}`}
                         >
-                          {item.status.replace("-", " ")}
+                          {displayStatus.replace("-", " ")}
                         </Badge>
                       </div>
                       <CardTitle className="text-base mt-2 text-white">
@@ -257,17 +285,17 @@ export default function RadialOrbitalTimeline({ timelineData }) {
                       <div className="mt-5 pt-4 border-t border-white/10">
                         <div className="flex justify-between items-center text-xs mb-2">
                           <span className="flex items-center text-gray-300">
-                            <Zap size={12} className="mr-1" /> Resource
+                            <Layers size={12} className="mr-1" /> Resource
                             Allocation
                           </span>
                           <span className="font-mono text-white">
-                            {item.energy}%
+                            {allocationValue}%
                           </span>
                         </div>
                         <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
                           <div
                             className="h-full bg-gradient-to-r from-gray-400 to-white"
-                            style={{ width: `${item.energy}%` }}
+                            style={{ width: `${allocationValue}%` }}
                           ></div>
                         </div>
                       </div>
