@@ -41,13 +41,15 @@ export default function AiPopup() {
             >
               <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
             </svg>
-            <span>Your ideas are protected by</span>
+            <span>
+              Your ideas are protected by{" "}
+              <button className="px-3 py-1 text-xs font-medium text-white bg-white/10 border border-white/20 rounded-full hover:bg-white/20 hover:border-white/40 hover:shadow-[0_0_10px_rgba(255,255,255,0.2)] transition-all duration-200">
+                IPFT Policy
+              </button>
+            </span>
           </div>
 
           {/* IPFT Policy Clickable Pill */}
-          <button className="px-3 py-1 text-xs font-medium text-white bg-white/10 border border-white/20 rounded-full hover:bg-white/20 hover:border-white/40 hover:shadow-[0_0_10px_rgba(255,255,255,0.2)] transition-all duration-200">
-            IPFT Policy
-          </button>
         </div>
 
         {/* 2. Main Input Area */}
