@@ -112,22 +112,12 @@ export default function AboutSection() {
 
         <div className="space-y-4 text-base md:text-lg text-gray-400 leading-relaxed max-w-xl">
           <p>
-            Aremu International Limited, also known as Aremu Group, is a
-            structured company-building and development organization that
-            transforms ideas into fully operational businesses.
-          </p>
-          <p>
-            We operate through a governed system that protects client ideas,
-            organizes execution into specialized departments, and ensures
-            transparency from research to launch. Every project begins with
-            structured analysis and documentation before moving into coordinated
-            development.
-          </p>
-          <p>
-            By combining professional oversight with AI-accelerated workflows,
-            Aremu Group delivers efficient, transparent, and enterprise-level
-            business development designed to turn concepts into scalable
-            companies.
+            At Aremu Group, we transform ideas into fully operational
+            businesses. Through a governed, transparent system, we protect
+            client IP and organize execution across specialized departments. By
+            combining structured analysis, professional oversight, and
+            AI-accelerated workflows, we deliver enterprise-level development to
+            turn your concepts into scalable companies.
           </p>
         </div>
 

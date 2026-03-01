@@ -2,6 +2,7 @@ import React from "react";
 import Navbar from "./components/Navbar";
 import AiPopup from "./components/AiPopup";
 import AboutSection from "./components/AboutSection";
+import { ContainerScroll } from "./components/ContainerScroll";
 import { WebGLShader } from "./components/web-gl-shader";
 import { motion } from "framer-motion";
 
@@ -60,7 +61,8 @@ export default function App() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed px-4 drop-shadow-md"
+              // THE FIX: Changed sizes to text-xs sm:text-sm md:text-base lg:text-lg
+              className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed px-4 drop-shadow-md"
             >
               We created AREMU GROUP to give every entrepreneur the tools and
               confidence to start or grow faster with decisions powered by real
@@ -98,6 +100,24 @@ export default function App() {
                     ABOUT SECTION (Text + Orbital Timeline)
                    ========================================= */}
         <AboutSection />
+
+        <ContainerScroll
+          titleComponent={
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">
+              Unleash the power of <br />
+              <span className="text-gray-400 text-3xl md:text-4xl">
+                AI-Driven Operations
+              </span>
+            </h2>
+          }
+        >
+          {/* The content that goes inside the scrolling 3D card */}
+          <img
+            src="/your-dashboard-image.jpg"
+            alt="Dashboard"
+            className="w-full h-full object-cover rounded-xl"
+          />
+        </ContainerScroll>
       </main>
     </div>
   );
