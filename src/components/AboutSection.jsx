@@ -1,5 +1,6 @@
 import React from "react";
 import RadialOrbitalTimeline from "./RadialOrbitalTimeline";
+import VideoPlayer from "./VideoPlayer";
 import {
   Brain,
   Brush,
@@ -22,8 +23,8 @@ export default function AboutSection() {
       category: "Strategy",
       icon: Brain,
       relatedIds: [2, 3],
-      status: "in-progress",
-      energy: 95,
+      status: "required",
+      allocation: 80,
     },
     {
       id: 2,
@@ -34,8 +35,8 @@ export default function AboutSection() {
       category: "Creative",
       icon: Brush,
       relatedIds: [1, 5],
-      status: "pending",
-      energy: 80,
+      status: "required",
+      allocation: 50,
     },
     {
       id: 3,
@@ -45,8 +46,8 @@ export default function AboutSection() {
       category: "Development",
       icon: Code,
       relatedIds: [1, 4],
-      status: "pending",
-      energy: 100,
+      status: "required",
+      allocation: 95,
     },
     {
       id: 4,
@@ -56,8 +57,8 @@ export default function AboutSection() {
       category: "Infrastructure",
       icon: Layers,
       relatedIds: [3, 6],
-      status: "pending",
-      energy: 85,
+      status: "required",
+      allocation: 90,
     },
     {
       id: 5,
@@ -67,8 +68,8 @@ export default function AboutSection() {
       category: "Growth",
       icon: TrendingUp,
       relatedIds: [2, 6],
-      status: "pending",
-      energy: 75,
+      status: "optional",
+      allocation: 40,
     },
     {
       id: 6,
@@ -78,8 +79,8 @@ export default function AboutSection() {
       category: "Management",
       icon: Briefcase,
       relatedIds: [1, 4, 7],
-      status: "completed",
-      energy: 90,
+      status: "required",
+      allocation: 75,
     },
     {
       id: 7,
@@ -90,67 +91,78 @@ export default function AboutSection() {
       category: "Legal",
       icon: ShieldCheck,
       relatedIds: [1, 6],
-      status: "completed",
-      energy: 100,
+      status: "required",
+      allocation: 60,
     },
   ];
 
   return (
-    // THE FIX: Added flex-col-reverse so the timeline (2nd item) shows up first on mobile
     <section
       id="about-video"
-      className="relative w-full min-h-screen bg-black border-t border-white/10 flex flex-col-reverse md:flex-row items-center justify-between px-6 md:px-12 lg:px-24 py-16 md:py-20 overflow-hidden z-10"
+      className="relative w-full min-h-screen bg-black border-t border-white/10 flex flex-col items-center justify-start px-4 md:px-12 lg:px-24 py-20 md:py-32 overflow-hidden z-10 gap-16 md:gap-24"
     >
-      {/* Left Column: Text Content */}
-      <div className="w-full md:w-1/2 space-y-6 z-20 md:pr-10 mt-8 md:mt-0">
-        <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white drop-shadow-lg">
-          Transforming Ideas Into <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500">
-            Operational Systems.
-          </span>
-        </h2>
-
-        <div className="space-y-4 text-base md:text-lg text-gray-400 leading-relaxed max-w-xl">
-          <p>
-            At Aremu Group, we transform ideas into fully operational
-            businesses. Through a governed, transparent system, we protect
-            client IP and organize execution across specialized departments. By
-            combining structured analysis, professional oversight, and
-            AI-accelerated workflows, we deliver enterprise-level development to
-            turn your concepts into scalable companies.
-          </p>
-        </div>
-
-        <div className="pt-4 pb-12 md:pb-0">
-          <a
-            href="/about"
-            className="inline-flex items-center justify-center px-8 py-3 rounded-full text-sm font-semibold bg-white text-black hover:bg-gray-200 hover:scale-105 transition-all duration-200 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
-          >
-            Learn More About Us
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="ml-2"
-            >
-              <path d="M5 12h14" />
-              <path d="m12 5 7 7-7 7" />
-            </svg>
-          </a>
+      {/* 1. TOP SECTION: Cinematic Video Player */}
+      <div className="w-full max-w-[1400px] mx-auto z-20">
+        <div className="w-full relative px-2 sm:px-0">
+          <VideoPlayer
+            desktopSrc="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+            mobileSrc="https://www.youtube.com/shorts/5Hvw2BvVlqE"
+          />
         </div>
       </div>
 
-      {/* Right Column: Interactive Orbital Timeline */}
-      {/* Increased height on mobile to make room for the larger orbit */}
-      <div className="w-full md:w-1/2 h-[450px] sm:h-[550px] md:h-screen relative z-10 flex items-center justify-center">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.05)_0%,_transparent_70%)] pointer-events-none"></div>
-        <RadialOrbitalTimeline timelineData={aremuDepartments} />
+      {/* 2. BOTTOM SECTION: Text and Timeline Split */}
+      <div className="flex flex-col-reverse lg:flex-row items-center justify-between w-full max-w-7xl mx-auto gap-12 md:gap-8 mt-10">
+        {/* Left Column: Text Content */}
+        <div className="w-full lg:w-1/2 space-y-6 z-20 lg:pr-10 text-center lg:text-left">
+          <h3 className="text-2xl md:text-4xl font-bold tracking-tight text-white drop-shadow-lg">
+            Transforming Ideas Into <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500">
+              Operational Systems.
+            </span>
+          </h3>
+
+          <div className="space-y-4 text-base md:text-lg text-gray-400 leading-relaxed max-w-xl mx-auto lg:mx-0">
+            <p>
+              At Aremu Group, we transform ideas into fully operational
+              businesses. Through a governed, transparent system, we protect
+              client IP and organize execution across specialized departments.
+              By combining structured analysis, professional oversight, and
+              AI-accelerated workflows, we deliver enterprise-level development
+              to turn your concepts into scalable companies.
+            </p>
+          </div>
+
+          <div className="pt-4 pb-12 lg:pb-0">
+            <a
+              href="/about"
+              className="inline-flex items-center justify-center px-8 py-3 rounded-full text-sm font-semibold bg-white text-black hover:bg-gray-200 hover:scale-105 transition-all duration-200 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+            >
+              Learn More About Us
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="ml-2"
+              >
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        {/* Right Column: Interactive Orbital Timeline */}
+        <div className="w-full lg:w-1/2 h-[450px] sm:h-[550px] relative z-10 flex items-center justify-center">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.05)_0%,_transparent_70%)] pointer-events-none"></div>
+          <RadialOrbitalTimeline timelineData={aremuDepartments} />
+        </div>
       </div>
     </section>
   );

@@ -4,6 +4,8 @@ import AiPopup from "./components/AiPopup";
 import AboutSection from "./components/AboutSection";
 import { ContainerScroll } from "./components/ContainerScroll";
 import { WebGLShader } from "./components/web-gl-shader";
+import GlobalReach from "@/components/GlobalReach";
+import Footer from "./components/Footer"; // <-- Added the import here!
 import { motion } from "framer-motion";
 
 export default function App() {
@@ -97,10 +99,13 @@ export default function App() {
         </section>
 
         {/* =========================================
-                    ABOUT SECTION (Text + Orbital Timeline)
-                   ========================================= */}
+            ABOUT SECTION (Video + Text + Orbital Timeline)
+           ========================================= */}
         <AboutSection />
 
+        {/* =========================================
+            DASHBOARD SECTION (3D Container Scroll)
+           ========================================= */}
         <ContainerScroll
           titleComponent={
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">
@@ -118,7 +123,17 @@ export default function App() {
             className="w-full h-full object-cover rounded-xl"
           />
         </ContainerScroll>
+
+        {/* =========================================
+            GLOBAL REACH SECTION (Map)
+           ========================================= */}
+        <GlobalReach />
       </main>
+
+      {/* =========================================
+          FOOTER SECTION
+         ========================================= */}
+      <Footer />
     </div>
   );
 }
