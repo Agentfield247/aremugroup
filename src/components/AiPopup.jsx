@@ -59,7 +59,7 @@ export default function AiPopup() {
   };
 
   return (
-    <div className="relative w-full max-w-3xl mx-auto my-8 group z-20">
+    <div className="relative w-full max-w-3xl mx-auto my-2 md:my-8 group z-20">
       <div className="absolute -inset-0.5 bg-gradient-to-r from-white/20 via-gray-400/20 to-white/20 rounded-2xl blur-xl opacity-30 group-hover:opacity-50 transition duration-500"></div>
 
       <div className="relative w-full bg-black/50 backdrop-blur-2xl rounded-[24px] p-2 border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
