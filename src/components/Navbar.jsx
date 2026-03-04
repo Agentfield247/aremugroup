@@ -8,9 +8,10 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "Structure", href: "#about-video" },
-    { name: "Projects", href: "/opportunity" },
+    { name: "About Us", href: "#about-video" },
+    { name: "Projects", href: "/projects" },
     { name: "Portfolios", href: "/legals" },
+    { name: "Join Us", href: "/opportunities" },
   ];
 
   // Handles clicking a link: sets the active tab and closes the mobile menu
