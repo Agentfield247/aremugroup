@@ -63,8 +63,8 @@ export default function App() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              // THE FIX: Changed sizes to text-xs sm:text-sm md:text-base lg:text-lg
-              className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed px-4 drop-shadow-md"
+              // THE FIX: Added "hidden md:block" to hide on mobile!
+              className="hidden md:block md:text-base lg:text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed px-4 drop-shadow-md"
             >
               We created AREMU GROUP to give every entrepreneur the tools and
               confidence to start or grow faster with decisions powered by real
