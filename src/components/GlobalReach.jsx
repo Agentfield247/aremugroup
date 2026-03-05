@@ -4,17 +4,18 @@ export default function GlobalReach() {
   const projects = [
     {
       title: "Acada-Bridge",
-      url: "fadyahpay.com",
+      url: "acadabridge.ng",
       description: "Engineered a comprehensive research intelligence platform.",
     },
     {
-      title: "FADYAH Pay",
-      url: "fadyahpay.com",
-      description: "Managed and integrated a seamless payment application.",
+      title: "QuaaPay",
+      url: "quaapay.com",
+      description:
+        "Managed and integrated a seamless payment application and currency exchange.",
     },
     {
       title: "Adé",
-      url: "fadyahpay.com",
+      url: "adescents.com",
       description: "Developed the digital presence for a custom perfume brand.",
     },
     {
@@ -23,23 +24,24 @@ export default function GlobalReach() {
     },
     {
       title: "V9 Studios",
+      url: "v9er.com",
       description:
         "Designed a dynamic portfolio website for an art and animation studio.",
     },
     {
       title: "BPM CTRL",
-      url: "fadyahpay.com",
+      url: "bpmctrl.com",
       description:
         "Created the digital identity, mascot, and branding for a popup party and clothing brand.",
     },
     {
       title: "Khatamly",
-      url: "fadyahpay.com",
+      url: "khatamly.app",
       description: "Developed a functional and scalable Quran application.",
     },
     {
       title: "AREMU Group",
-      url: "fadyahpay.com",
+      url: "aremugroup.com",
       description: "Built the corporate website and navigation architecture.",
     },
   ];

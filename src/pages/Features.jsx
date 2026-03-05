@@ -15,12 +15,13 @@ import {
   RefreshCw,
   LayoutList,
   Minus,
-  Trash2,
   Clock,
   Wallet,
   CalendarDays,
   ChevronDown,
   ChevronUp,
+  Download,
+  UserPlus,
   BrainCircuit,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -48,7 +49,6 @@ export default function Features() {
   const [showDepartments, setShowDepartments] = useState(false);
   const [isAiAnalyzingDepts, setIsAiAnalyzingDepts] = useState(false);
 
-  // API Data
   const [apiDepartments, setApiDepartments] = useState([]);
   const [selectedDeptCode, setSelectedDeptCode] = useState("");
 
@@ -85,7 +85,6 @@ export default function Features() {
       const apiKey = import.meta.env.VITE_GROQ_API_KEY;
       if (!apiKey) throw new Error("Missing VITE_GROQ_API_KEY.");
 
-      // THE FIX: Updated prompt to force a single, simple sentence.
       const prompt = `Rewrite this raw feature idea into a single, simple, and highly understandable sentence. Make it clear and accessible. Do NOT use paragraphs, headings, or bullet points. Return exactly ONE sentence.
       Vision: ${visionText}
       Feature: "${featToUpdate.text}"
@@ -140,7 +139,7 @@ export default function Features() {
     code: "AI_RES_CONSTANT",
     name: "AI & Solution Research Dept",
     description:
-      "Core AI research, architectural mapping, and strategic planning. Increasing researchers exponentially scales cost but accelerates delivery.",
+      "Core AI research, architectural mapping, and strategic planning. Increasing researchers scales cost but accelerates delivery.",
     isConstant: true,
     subs: [
       {
@@ -150,7 +149,8 @@ export default function Features() {
         seniors: 1,
         juniors: 0,
         speed: 5,
-        budget: 100000,
+        aremuEstimate: 100000,
+        userBudget: 100000,
         isExponential: true,
       },
     ],
@@ -195,7 +195,6 @@ export default function Features() {
         Available Departments: ${JSON.stringify(deptListForLLM)}
 
         For each selected sub-division, assign logical seniors, juniors, delivery speed (days), and budget (Naira).
-
         Return ONLY valid JSON exactly like this:
         {
           "selected": [
@@ -257,7 +256,8 @@ export default function Features() {
                       seniors: s.seniors || 1,
                       juniors: s.juniors || 1,
                       speed: s.speed || 7,
-                      budget: s.budget || 250000,
+                      aremuEstimate: s.budget || 250000,
+                      userBudget: s.budget || 250000,
                     }))
                   : [
                       {
@@ -267,7 +267,8 @@ export default function Features() {
                         seniors: 1,
                         juniors: 2,
                         speed: 7,
-                        budget: 250000,
+                        aremuEstimate: 250000,
+                        userBudget: 250000,
                       },
                     ],
             };
@@ -276,8 +277,6 @@ export default function Features() {
 
         const finalDepartments = [getAiDeptTemplate(), ...aiSuggestedDepts];
         setProjectDepartments(finalDepartments);
-
-        // THE FIX: Initialize all accordions as closed (falsy) instead of true
         setOpenDeptAccordions({});
       } catch (error) {
         console.error(error);
@@ -291,13 +290,8 @@ export default function Features() {
   // ==========================================
   // NESTED DEPARTMENT UI HANDLERS
   // ==========================================
-  const toggleAccordion = (code) => {
+  const toggleAccordion = (code) =>
     setOpenDeptAccordions((prev) => ({ ...prev, [code]: !prev[code] }));
-  };
-
-  const removeProjectDept = (code) => {
-    setProjectDepartments(projectDepartments.filter((d) => d.code !== code));
-  };
 
   const updateSubDept = (deptCode, subId, field, value) => {
     setProjectDepartments(
@@ -305,22 +299,29 @@ export default function Features() {
         if (dept.code === deptCode) {
           const updatedSubs = dept.subs.map((sub) => {
             if (sub.id === subId) {
+              // Exponential AI Dept Logic
               if (sub.isExponential && field === "seniors") {
                 const newPeople = Math.min(5, Math.max(1, Number(value)));
                 const newSpeed = 6 - newPeople;
-                const newBudget = 100000 * Math.pow(2, newPeople - 1);
+                const newCost = 100000 * Math.pow(2, newPeople - 1);
                 return {
                   ...sub,
                   seniors: newPeople,
                   speed: newSpeed,
-                  budget: newBudget,
+                  aremuEstimate: newCost,
+                  userBudget: newCost,
                 };
               }
 
-              let safeValue = value;
-              if (["seniors", "juniors", "speed", "budget"].includes(field)) {
-                safeValue = Math.max(0, Number(value));
+              // Handle user editing THEIR budget
+              if (field === "userBudget") {
+                return { ...sub, userBudget: Math.max(0, Number(value)) };
               }
+
+              // Normal staffing logic
+              let safeValue = value;
+              if (["seniors", "juniors", "speed"].includes(field))
+                safeValue = Math.max(0, Number(value));
               return { ...sub, [field]: safeValue };
             }
             return sub;
@@ -329,20 +330,6 @@ export default function Features() {
         }
         return dept;
       }),
-    );
-  };
-
-  const removeSubDept = (deptCode, subId) => {
-    setProjectDepartments(
-      projectDepartments
-        .map((dept) => {
-          if (dept.code === deptCode) {
-            const remainingSubs = dept.subs.filter((s) => s.id !== subId);
-            return { ...dept, subs: remainingSubs };
-          }
-          return dept;
-        })
-        .filter((dept) => dept.isConstant || dept.subs.length > 0),
     );
   };
 
@@ -363,7 +350,8 @@ export default function Features() {
               seniors: 1,
               juniors: 1,
               speed: 7,
-              budget: 200000,
+              aremuEstimate: 200000,
+              userBudget: 200000,
             }))
           : [
               {
@@ -373,7 +361,8 @@ export default function Features() {
                 seniors: 1,
                 juniors: 1,
                 speed: 7,
-                budget: 200000,
+                aremuEstimate: 200000,
+                userBudget: 200000,
               },
             ];
 
@@ -386,7 +375,6 @@ export default function Features() {
           subs: manualSubs,
         },
       ]);
-      // Ensure manually added departments are also closed by default
       setOpenDeptAccordions((prev) => ({
         ...prev,
         [dept.department_code]: false,
@@ -396,16 +384,17 @@ export default function Features() {
   };
 
   // --- MATH HELPERS ---
-  const calculateExpectedExpenses = (seniors, juniors) =>
+  const calculateExpectedWages = (seniors, juniors) =>
     seniors * 150000 + juniors * 50000;
 
-  const getDeptTotals = (subs) => {
+  // Calculates totals for the Aremu Estimate (Wages + Aremu Base Budget)
+  const getAremuDeptTotals = (subs) => {
     return subs.reduce(
       (acc, sub) => {
         const wages = sub.isExponential
           ? 0
-          : calculateExpectedExpenses(sub.seniors, sub.juniors);
-        acc.cost += wages + Number(sub.budget);
+          : calculateExpectedWages(sub.seniors, sub.juniors);
+        acc.cost += wages + Number(sub.aremuEstimate);
         acc.speed = Math.max(acc.speed, sub.speed);
         acc.staff += sub.seniors + sub.juniors;
         return acc;
@@ -414,13 +403,81 @@ export default function Features() {
     );
   };
 
-  const grandTotalCost = projectDepartments.reduce(
-    (total, dept) => total + getDeptTotals(dept.subs).cost,
+  // Calculates totals for the User's Desired Budget (Wages + User Edited Budget)
+  const getUserDeptTotals = (subs) => {
+    return subs.reduce(
+      (acc, sub) => {
+        const wages = sub.isExponential
+          ? 0
+          : calculateExpectedWages(sub.seniors, sub.juniors);
+        acc.cost += wages + Number(sub.userBudget);
+        return acc;
+      },
+      { cost: 0 },
+    );
+  };
+
+  const aremuGrandTotal = projectDepartments.reduce(
+    (total, dept) => total + getAremuDeptTotals(dept.subs).cost,
     0,
   );
+  const userGrandTotal = projectDepartments.reduce(
+    (total, dept) => total + getUserDeptTotals(dept.subs).cost,
+    0,
+  );
+
   const activeDeptPreview = apiDepartments.find(
     (d) => d.department_code === selectedDeptCode,
   );
+
+  // --- DOWNLOAD RECEIPT HELPER ---
+  const handleDownloadConfig = () => {
+    let content = `AREMU GROUP - PROJECT EXECUTION BLUEPRINT\n`;
+    content += `=================================================\n\n`;
+
+    content += `PROJECT VISION:\n`;
+    content += `${visionText || "No vision provided."}\n\n`;
+
+    content += `FEATURES:\n`;
+    featuresList.forEach((f, i) => {
+      if (f.text) content += `${i + 1}. ${f.text}\n`;
+    });
+    content += `\n=================================================\n\n`;
+
+    content += `DEPARTMENT BREAKDOWN:\n\n`;
+    projectDepartments.forEach((dept) => {
+      const totals = getAremuDeptTotals(dept.subs);
+      const userTotals = getUserDeptTotals(dept.subs);
+
+      content += `[ ${dept.name.toUpperCase()} ]\n`;
+      content += `Timeline: ${totals.speed} Days | Staff: ${totals.staff}\n`;
+
+      dept.subs.forEach((sub) => {
+        const wages = sub.isExponential
+          ? 0
+          : calculateExpectedWages(sub.seniors, sub.juniors);
+        content += `  -> ${sub.title}\n`;
+        content += `     Staff: ${sub.seniors} Seniors, ${sub.juniors} Juniors | Speed: ${sub.speed} days\n`;
+        content += `     Task Cost: NGN ${sub.aremuEstimate.toLocaleString()} (User Budget: NGN ${sub.userBudget.toLocaleString()})\n`;
+      });
+      content += `\n`;
+    });
+
+    content += `=================================================\n`;
+    content += `AREMU ESTIMATE: NGN ${aremuGrandTotal.toLocaleString()}\n`;
+    content += `YOUR BUDGET: NGN ${userGrandTotal.toLocaleString()}\n`;
+    content += `=================================================\n`;
+
+    const blob = new Blob([content], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "Aremu_Project_Blueprint.txt";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-gray-500/30">
@@ -597,7 +654,6 @@ export default function Features() {
               </motion.div>
             ))}
           </AnimatePresence>
-
           <button
             onClick={handleAddFeature}
             className="w-full flex items-center justify-center gap-2 py-5 border-2 border-dashed border-white/10 hover:border-white/30 rounded-2xl text-gray-500 hover:text-white transition-colors bg-white/[0.01] font-medium"
@@ -645,7 +701,7 @@ export default function Features() {
                     style={{ transform: "translateX(-50%)" }}
                   ></div>
                   <div className="flex flex-col items-center justify-center space-y-4 relative z-10">
-                    <Sparkles className="w-10 h-10 text-blue-400 animate-bounce" />
+                    <Sparkles className="w-10 h-10 text-white animate-bounce" />
                     <h3 className="text-xl font-bold text-white">
                       AI is building your organizational chart...
                     </h3>
@@ -662,7 +718,7 @@ export default function Features() {
                   <AnimatePresence>
                     {projectDepartments.map((dept) => {
                       const isOpen = openDeptAccordions[dept.code];
-                      const totals = getDeptTotals(dept.subs);
+                      const totals = getAremuDeptTotals(dept.subs);
 
                       return (
                         <motion.div
@@ -670,29 +726,17 @@ export default function Features() {
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.95 }}
-                          className={`bg-[#111111]/90 backdrop-blur-xl border rounded-3xl overflow-hidden shadow-2xl ${dept.isConstant ? "border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.1)]" : "border-white/20"}`}
+                          className="bg-[#111111]/90 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl"
                         >
                           {/* PARENT DEPARTMENT HEADER */}
                           <div
                             onClick={() => toggleAccordion(dept.code)}
                             className="p-6 md:p-8 cursor-pointer hover:bg-white/[0.02] transition-colors relative"
                           >
-                            {!dept.isConstant && (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  removeProjectDept(dept.code);
-                                }}
-                                className="absolute top-6 right-6 text-gray-500 hover:text-red-400 transition-colors bg-white/5 hover:bg-red-400/10 p-2 rounded-full z-10"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            )}
-
                             <div className="pr-12">
                               <h3 className="text-xl md:text-2xl font-bold text-white mb-2 flex items-center gap-2">
                                 {dept.isConstant && (
-                                  <BrainCircuit className="w-6 h-6 text-purple-400" />
+                                  <BrainCircuit className="w-5 h-5 text-gray-400" />
                                 )}
                                 {dept.name}
                               </h3>
@@ -701,15 +745,10 @@ export default function Features() {
                               </p>
                             </div>
 
-                            {/* Department High-Level Stats */}
-                            <div className="mt-6 flex flex-wrap gap-4 items-center">
-                              <div
-                                className={`px-4 py-2 rounded-xl ${dept.isConstant ? "bg-purple-500/10 border-purple-500/20" : "bg-blue-500/10 border-blue-500/20"} border`}
-                              >
-                                <span
-                                  className={`text-xs block mb-0.5 font-bold uppercase tracking-wider ${dept.isConstant ? "text-purple-400" : "text-blue-400"}`}
-                                >
-                                  Total Est. Cost
+                            <div className="mt-6 flex flex-wrap gap-3 md:gap-4 items-center">
+                              <div className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl">
+                                <span className="text-xs text-gray-400 block mb-0.5 font-bold uppercase tracking-wider">
+                                  Est. Cost
                                 </span>
                                 <span className="text-base font-black text-white">
                                   ₦ {totals.cost.toLocaleString()}
@@ -732,7 +771,7 @@ export default function Features() {
                                 </span>
                               </div>
 
-                              <div className="ml-auto text-gray-500 flex items-center gap-2 text-sm font-medium">
+                              <div className="w-full md:w-auto md:ml-auto mt-2 md:mt-0 text-gray-500 flex items-center justify-between md:justify-end gap-2 text-sm font-medium border-t md:border-0 border-white/5 pt-3 md:pt-0">
                                 {isOpen
                                   ? "Hide Details"
                                   : "View Sub-Departments"}
@@ -745,7 +784,7 @@ export default function Features() {
                             </div>
                           </div>
 
-                          {/* NESTED SUB-DEPARTMENTS (Accordion Body) */}
+                          {/* NESTED SUB-DEPARTMENTS */}
                           <AnimatePresence>
                             {isOpen && (
                               <motion.div
@@ -754,12 +793,12 @@ export default function Features() {
                                 exit={{ height: 0, opacity: 0 }}
                                 className="overflow-hidden"
                               >
-                                <div className="p-6 md:p-8 bg-black/40 border-t border-white/10 space-y-8">
+                                <div className="p-4 md:p-8 bg-black/40 border-t border-white/10 space-y-8">
                                   {dept.subs.map((sub) => {
                                     const isExp = sub.isExponential;
-                                    const expectedExpenses = isExp
+                                    const wages = isExp
                                       ? 0
-                                      : calculateExpectedExpenses(
+                                      : calculateExpectedWages(
                                           sub.seniors,
                                           sub.juniors,
                                         );
@@ -767,27 +806,12 @@ export default function Features() {
                                     return (
                                       <div
                                         key={sub.id}
-                                        className="relative pl-6 md:pl-8 border-l-2 border-white/10"
+                                        className="relative pl-4 md:pl-8 border-l-2 border-white/10"
                                       >
-                                        <div
-                                          className={`absolute -left-[9px] top-2 w-4 h-4 rounded-full border-2 bg-[#111] ${isExp ? "border-purple-500" : "border-gray-600"}`}
-                                        ></div>
+                                        <div className="absolute -left-[9px] top-2 w-4 h-4 rounded-full border-2 bg-[#111] border-gray-600"></div>
 
-                                        {!dept.isConstant && (
-                                          <button
-                                            onClick={() =>
-                                              removeSubDept(dept.code, sub.id)
-                                            }
-                                            className="absolute top-0 right-0 text-gray-600 hover:text-red-400"
-                                          >
-                                            <X className="w-4 h-4" />
-                                          </button>
-                                        )}
-
-                                        <div className="mb-5 pr-8">
-                                          <h4
-                                            className={`text-lg font-bold ${isExp ? "text-purple-300" : "text-white"}`}
-                                          >
+                                        <div className="mb-5 pr-6 md:pr-8">
+                                          <h4 className="text-base md:text-lg font-bold text-white">
                                             {sub.title}
                                           </h4>
                                           <p className="text-xs text-gray-400 mt-1">
@@ -799,12 +823,11 @@ export default function Features() {
                                           {/* Left Col: Staffing */}
                                           <div className="space-y-3">
                                             {isExp ? (
-                                              // EXPONENTIAL STAFFING UI
-                                              <div className="flex items-center justify-between bg-purple-500/5 p-2.5 rounded-xl border border-purple-500/20">
-                                                <span className="text-xs text-purple-300 font-bold">
+                                              <div className="flex items-center justify-between bg-white/5 p-2.5 rounded-xl border border-white/5">
+                                                <span className="text-xs text-gray-300 font-bold">
                                                   Researchers (Max 5):
                                                 </span>
-                                                <div className="flex items-center gap-2 bg-black/50 rounded-lg p-1 border border-purple-500/20">
+                                                <div className="flex items-center gap-2 bg-black/50 rounded-lg p-1">
                                                   <button
                                                     onClick={() =>
                                                       updateSubDept(
@@ -814,11 +837,11 @@ export default function Features() {
                                                         sub.seniors - 1,
                                                       )
                                                     }
-                                                    className="p-1 hover:text-purple-400 text-gray-400"
+                                                    className="p-1 hover:text-white"
                                                   >
                                                     <Minus className="w-3 h-3" />
                                                   </button>
-                                                  <span className="w-4 text-center text-xs font-black text-purple-300">
+                                                  <span className="w-4 text-center text-xs font-black text-white">
                                                     {sub.seniors}
                                                   </span>
                                                   <button
@@ -830,14 +853,13 @@ export default function Features() {
                                                         sub.seniors + 1,
                                                       )
                                                     }
-                                                    className="p-1 hover:text-purple-400 text-gray-400"
+                                                    className="p-1 hover:text-white"
                                                   >
                                                     <Plus className="w-3 h-3" />
                                                   </button>
                                                 </div>
                                               </div>
                                             ) : (
-                                              // NORMAL STAFFING UI
                                               <>
                                                 <div className="flex items-center justify-between bg-white/5 p-2.5 rounded-xl border border-white/5">
                                                   <span className="text-xs text-gray-300 font-medium">
@@ -914,7 +936,6 @@ export default function Features() {
                                               </>
                                             )}
 
-                                            {/* SPEED UI */}
                                             <div className="flex items-center justify-between bg-white/5 p-2.5 rounded-xl border border-white/5">
                                               <span className="text-xs text-gray-300 font-medium flex items-center gap-1.5">
                                                 <Clock className="w-3 h-3" />{" "}
@@ -922,7 +943,7 @@ export default function Features() {
                                               </span>
                                               <div className="flex items-center gap-1">
                                                 {isExp ? (
-                                                  <span className="w-12 text-center text-xs font-black text-purple-400 bg-black/50 py-1 rounded-md border border-purple-500/20">
+                                                  <span className="w-12 text-center text-xs font-black text-white bg-black/50 py-1 rounded-md border border-white/10">
                                                     {sub.speed}
                                                   </span>
                                                 ) : (
@@ -953,61 +974,54 @@ export default function Features() {
                                             {!isExp && (
                                               <div className="flex items-center justify-between bg-white/5 p-2.5 rounded-xl border border-white/5">
                                                 <span className="text-xs text-gray-300 font-medium">
-                                                  Wages Cost:
+                                                  Wages:
                                                 </span>
                                                 <span className="text-xs font-bold text-gray-300">
-                                                  ₦{" "}
-                                                  {expectedExpenses.toLocaleString()}
+                                                  ₦ {wages.toLocaleString()}
                                                 </span>
                                               </div>
                                             )}
-                                            <div
-                                              className={`flex items-center justify-between p-2.5 rounded-xl border ${isExp ? "bg-purple-500/10 border-purple-500/30" : "bg-blue-500/10 border-blue-500/20"}`}
-                                            >
-                                              <span
-                                                className={`text-xs font-medium flex items-center gap-1.5 ${isExp ? "text-purple-300" : "text-blue-300"}`}
-                                              >
-                                                <Wallet className="w-3 h-3" />{" "}
-                                                Task Budget:
-                                              </span>
-                                              <div className="flex items-center gap-1">
-                                                <span
-                                                  className={`text-xs font-bold ${isExp ? "text-purple-400/50" : "text-blue-400/50"}`}
-                                                >
-                                                  ₦
+
+                                            <div className="flex flex-col bg-white/5 p-2.5 rounded-xl border border-white/10">
+                                              <div className="flex items-center justify-between mb-2">
+                                                <span className="text-xs font-medium flex items-center gap-1.5 text-gray-300">
+                                                  <Wallet className="w-3 h-3" />{" "}
+                                                  Task Budget:
                                                 </span>
-                                                {isExp ? (
-                                                  <span className="w-20 text-right text-xs font-black text-purple-300">
-                                                    {sub.budget.toLocaleString()}
-                                                  </span>
-                                                ) : (
-                                                  <input
-                                                    type="number"
-                                                    value={sub.budget}
-                                                    onChange={(e) =>
-                                                      updateSubDept(
-                                                        dept.code,
-                                                        sub.id,
-                                                        "budget",
-                                                        e.target.value,
-                                                      )
-                                                    }
-                                                    className="w-20 bg-black/50 border border-blue-500/30 rounded-md px-1.5 py-0.5 text-xs text-blue-100 font-bold focus:outline-none"
-                                                  />
-                                                )}
+                                                <span className="text-xs font-bold text-white">
+                                                  ₦{" "}
+                                                  {Number(
+                                                    sub.aremuEstimate,
+                                                  ).toLocaleString()}
+                                                </span>
                                               </div>
-                                            </div>
-                                            <div className="flex items-center justify-between bg-green-500/5 p-2.5 rounded-xl border border-green-500/10 mt-1">
-                                              <span className="text-xs font-bold text-green-400">
-                                                Sub-Total:
-                                              </span>
-                                              <span className="text-sm font-black text-green-400">
-                                                ₦{" "}
-                                                {(
-                                                  expectedExpenses +
-                                                  Number(sub.budget)
-                                                ).toLocaleString()}
-                                              </span>
+
+                                              {/* User Budget Edit */}
+                                              {!isExp && (
+                                                <div className="flex items-center justify-between border-t border-white/5 pt-2">
+                                                  <span className="text-[10px] text-gray-400">
+                                                    Your Budget:
+                                                  </span>
+                                                  <div className="flex items-center gap-1">
+                                                    <span className="text-[10px] text-gray-500">
+                                                      ₦
+                                                    </span>
+                                                    <input
+                                                      type="number"
+                                                      value={sub.userBudget}
+                                                      onChange={(e) =>
+                                                        updateSubDept(
+                                                          dept.code,
+                                                          sub.id,
+                                                          "userBudget",
+                                                          e.target.value,
+                                                        )
+                                                      }
+                                                      className="w-20 bg-black/50 border border-white/10 rounded-md px-1.5 py-0.5 text-xs text-gray-300 font-bold focus:outline-none focus:border-white/30"
+                                                    />
+                                                  </div>
+                                                </div>
+                                              )}
                                             </div>
                                           </div>
                                         </div>
@@ -1027,15 +1041,15 @@ export default function Features() {
 
               {/* MANUAL OVERRIDE */}
               {!isAiAnalyzingDepts && (
-                <div className="bg-[#111111]/50 border border-white/5 rounded-3xl p-6 shadow-md mb-10">
+                <div className="bg-[#111111]/50 border border-white/5 rounded-3xl p-5 md:p-6 shadow-md mb-10">
                   <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <Plus className="w-4 h-4" /> Manually Add Department
+                    <Plus className="w-4 h-4" /> Add Department
                   </h3>
                   <div className="space-y-4">
                     <select
                       value={selectedDeptCode}
                       onChange={(e) => setSelectedDeptCode(e.target.value)}
-                      className="w-full bg-black/80 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none appearance-none cursor-pointer"
+                      className="w-full bg-black/80 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none appearance-none cursor-pointer"
                     >
                       <option value="" disabled>
                         Select from API database...
@@ -1061,12 +1075,12 @@ export default function Features() {
                         animate={{ opacity: 1, height: "auto" }}
                       >
                         <div className="p-4 bg-white/5 rounded-xl border border-white/10 text-sm mt-4">
-                          <p className="text-gray-300 mb-4">
+                          <p className="text-gray-300 mb-4 text-xs md:text-sm">
                             {activeDeptPreview.department_description}
                           </p>
                           <button
                             onClick={handleAddDepartmentManually}
-                            className="w-full py-3 bg-white/10 text-white font-bold rounded-xl hover:bg-white hover:text-black transition-colors"
+                            className="w-full py-3 bg-white/10 text-white text-sm font-bold rounded-xl hover:bg-white hover:text-black transition-colors"
                           >
                             Add to Blueprint
                           </button>
@@ -1077,25 +1091,59 @@ export default function Features() {
                 </div>
               )}
 
-              {/* GRAND TOTAL */}
+              {/* GRAND TOTAL & CALL TO ACTION SECTION */}
               {!isAiAnalyzingDepts && projectDepartments.length > 0 && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="mt-8 p-6 md:p-10 bg-gradient-to-r from-blue-900/20 via-black to-blue-900/20 border border-blue-500/20 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_0_50px_rgba(59,130,246,0.1)] relative overflow-hidden"
+                  className="mt-12 space-y-6"
                 >
-                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 via-purple-500 to-blue-600"></div>
-                  <div>
-                    <h3 className="text-2xl font-black text-white">
-                      Grand Total Estimate
-                    </h3>
-                    <p className="text-blue-200/60 text-sm mt-1 font-medium">
-                      Includes all wages and task budgets across all
-                      departments.
-                    </p>
+                  {/* The Estimate Banner */}
+                  <div className="p-6 md:p-10 bg-[#111111]/80 backdrop-blur-xl border border-white/10 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
+                    <div className="text-center md:text-left">
+                      <h3 className="text-2xl md:text-3xl font-bold text-white">
+                        Project Estimate
+                      </h3>
+                      <p className="text-gray-400 text-sm mt-1">
+                        Calculated operational and task costs.
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col items-center md:items-end">
+                      {/* Aremu Estimate */}
+                      <div className="text-3xl md:text-4xl font-black text-white tracking-tight">
+                        ₦ {aremuGrandTotal.toLocaleString()}
+                      </div>
+
+                      {/* User Budget (Only shows if different from Aremu Estimate) */}
+                      {userGrandTotal !== aremuGrandTotal && (
+                        <div className="text-sm font-medium text-gray-500 mt-2 flex items-center gap-2">
+                          <span>Your Budget:</span>
+                          <span className=" decoration-gray-600">
+                            ₦ {userGrandTotal.toLocaleString()}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="text-4xl md:text-5xl font-black text-white tracking-tight drop-shadow-lg">
-                    ₦ {grandTotalCost.toLocaleString()}
+
+                  {/* Actions: Download & Sign Up */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button
+                      onClick={handleDownloadConfig}
+                      className="flex items-center justify-center gap-3 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/30 transition-all text-white font-bold group"
+                    >
+                      <Download className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+                      Download Blueprint
+                    </button>
+
+                    <button
+                      onClick={() => alert("Redirecting to Signup Page...")}
+                      className="flex items-center justify-center gap-3 p-5 rounded-2xl bg-white text-black hover:bg-gray-200 transition-all font-bold shadow-lg hover:scale-[1.02]"
+                    >
+                      <UserPlus className="w-5 h-5" />
+                      Save & Continue
+                    </button>
                   </div>
                 </motion.div>
               )}

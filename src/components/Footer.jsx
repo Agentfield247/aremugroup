@@ -1,5 +1,12 @@
 import React from "react";
-import { Twitter, Linkedin, Github, Mail, ArrowRight } from "lucide-react";
+import {
+  Twitter,
+  Linkedin,
+  Github,
+  Mail,
+  ArrowRight,
+  HeartHandshake,
+} from "lucide-react";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -11,9 +18,9 @@ export default function Footer() {
 
       <div className="w-full max-w-7xl mx-auto px-6 md:px-8 lg:px-12 relative z-20">
         {/* Top Section: Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-12 gap-10 lg:gap-8 mb-16">
           {/* Column 1: Brand & Newsletter (Takes up 4 columns on desktop) */}
-          <div className="lg:col-span-4 space-y-6">
+          <div className="col-span-2 md:col-span-4 lg:col-span-4 space-y-6">
             <h3 className="text-2xl font-bold tracking-tight text-white">
               AREMU GROUP.
             </h3>
@@ -40,8 +47,8 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 2: Developers & Resources */}
-          <div className="lg:col-span-3 lg:col-start-6">
+          {/* Column 2: Resources */}
+          <div className="col-span-1 md:col-span-1 lg:col-span-2 lg:col-start-6">
             <h4 className="text-white font-semibold mb-6 tracking-wide">
               Resources
             </h4>
@@ -81,78 +88,91 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 3: Company & Explore */}
-          <div className="lg:col-span-2">
+          {/* Column 3: Earn with Us (NEW) */}
+          <div className="col-span-1 md:col-span-1 lg:col-span-2">
             <h4 className="text-white font-semibold mb-6 tracking-wide">
-              Company
+              Earn with Us
             </h4>
             <ul className="space-y-4">
               <li>
                 <a
-                  href="/about"
+                  href="/join"
                   className="text-sm text-gray-400 hover:text-white transition-colors"
                 >
-                  About Us
+                  Join Us
                 </a>
               </li>
               <li>
                 <a
-                  href="/careers"
+                  href="/survey"
                   className="text-sm text-gray-400 hover:text-white transition-colors"
                 >
-                  Careers
+                  Take a Survey
                 </a>
               </li>
               <li>
                 <a
-                  href="/contact"
+                  href="/agent"
                   className="text-sm text-gray-400 hover:text-white transition-colors"
                 >
-                  Contact
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/sitemap"
-                  className="text-sm text-gray-400 hover:text-white transition-colors"
-                >
-                  Site Map
+                  Become an Agent
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Column 4: Legal */}
-          <div className="lg:col-span-2">
-            <h4 className="text-white font-semibold mb-6 tracking-wide">
-              Legal
-            </h4>
-            <ul className="space-y-4">
-              <li>
-                <a
-                  href="/terms"
-                  className="text-sm text-gray-400 hover:text-white transition-colors"
-                >
-                  Terms of Use
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/policy"
-                  className="text-sm text-gray-400 hover:text-white transition-colors"
-                >
-                  Privacy Policy
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/cookies"
-                  className="text-sm text-gray-400 hover:text-white transition-colors"
-                >
-                  Cookie Policy
-                </a>
-              </li>
-            </ul>
+          {/* Column 4: Aremu Charity (NEW) & Legal */}
+          <div className="col-span-2 md:col-span-2 lg:col-span-2">
+            {/* Charity Section */}
+            <div className="mb-8">
+              <h4 className="text-white font-semibold mb-4 tracking-wide flex items-center gap-2">
+                Aremu Charity{" "}
+                <HeartHandshake className="w-4 h-4 text-rose-400" />
+              </h4>
+              <ul className="space-y-4">
+                <li>
+                  <a
+                    href="/donate"
+                    className="text-sm text-gray-400 hover:text-rose-400 transition-colors"
+                  >
+                    Make a Donation
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/charity-projects"
+                    className="text-sm text-gray-400 hover:text-white transition-colors"
+                  >
+                    Past Projects & Photos
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Legal Section */}
+            <div>
+              <h4 className="text-white font-semibold mb-4 tracking-wide">
+                Legal
+              </h4>
+              <ul className="space-y-4">
+                <li>
+                  <a
+                    href="/terms"
+                    className="text-sm text-gray-400 hover:text-white transition-colors"
+                  >
+                    Terms of Use
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/policy"
+                    className="text-sm text-gray-400 hover:text-white transition-colors"
+                  >
+                    Privacy Policy
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 
