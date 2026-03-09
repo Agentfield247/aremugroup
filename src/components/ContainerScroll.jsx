@@ -20,21 +20,30 @@ export const ContainerScroll = ({ titleComponent, children }) => {
     };
   }, []);
 
+  // FIXED: Adjusted scale so it doesn't shrink so drastically on mobile
   const scaleDimensions = () => {
-    return isMobile ? [0.7, 0.9] : [1.05, 1];
+    return isMobile ? [0.85, 1] : [1.05, 1];
   };
 
   const rotate = useTransform(scrollYProgress, [0, 1], [20, 0]);
   const scale = useTransform(scrollYProgress, [0, 1], scaleDimensions());
-  const translate = useTransform(scrollYProgress, [0, 1], [0, -100]);
+
+  // FIXED: Reduced the upward translation distance on mobile so the header doesn't fly away
+  const translate = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [0, isMobile ? -40 : -100],
+  );
 
   return (
     <div
-      className="h-[60rem] md:h-[80rem] flex items-center justify-center relative p-2 md:p-20"
+      // FIXED: Reduced mobile height from 60rem (960px) to 40rem (640px) to destroy the huge gap
+      className="h-[40rem] sm:h-[50rem] md:h-[80rem] flex items-center justify-center relative p-2 md:p-20"
       ref={containerRef}
     >
       <div
-        className="py-10 md:py-40 w-full relative"
+        // FIXED: Reduced top padding on mobile
+        className="py-4 md:py-40 w-full relative"
         style={{
           perspective: "1000px",
         }}
@@ -70,7 +79,8 @@ export const Card = ({ rotate, scale, children }) => {
         boxShadow:
           "0 0 #0000004d, 0 9px 20px #0000004a, 0 37px 37px #00000042, 0 84px 50px #00000026, 0 149px 60px #0000000a, 0 233px 65px #00000003",
       }}
-      className="max-w-5xl -mt-12 mx-auto h-[30rem] md:h-[40rem] w-full border-4 border-[#333333] p-2 md:p-6 bg-[#111111] rounded-[30px] shadow-2xl"
+      // FIXED: Adjusted margin-top to pull the card closer to the header on mobile
+      className="max-w-5xl mt-6 md:-mt-12 mx-auto h-[32rem] md:h-[40rem] w-full border-4 border-[#333333] p-2 md:p-6 bg-[#111111] rounded-[30px] shadow-2xl"
     >
       {/* Changed bg to black to match the theme */}
       <div className="h-full w-full overflow-hidden rounded-2xl bg-black md:rounded-2xl md:p-4 border border-white/5">

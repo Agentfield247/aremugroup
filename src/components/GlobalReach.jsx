@@ -47,7 +47,8 @@ export default function GlobalReach() {
   ];
 
   return (
-    <section className="relative w-full py-20 md:py-32 bg-black border-t border-white/10 overflow-hidden z-10">
+    // FIXED: Changed py-20 to 'pt-20 pb-4'. This keeps the top space but removes the bottom space.
+    <section className="relative w-full pt-20 pb-4 md:pt-32 md:pb-12 bg-black border-t border-white/10 overflow-hidden z-10">
       <div className="text-center mb-10 md:mb-16 px-4">
         <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-3 md:mb-4">
           Our Projects.
@@ -57,7 +58,8 @@ export default function GlobalReach() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 relative z-10 py-10 max-w-7xl mx-auto px-4 md:px-8">
+      {/* FIXED: Changed py-10 to 'pt-10 pb-0' to remove the extra space beneath the last row of cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 relative z-10 pt-10 pb-0 max-w-7xl mx-auto px-4 md:px-8">
         {projects.map((feature, index) => (
           <Feature key={feature.title} {...feature} index={index} />
         ))}
@@ -69,7 +71,8 @@ export default function GlobalReach() {
 const Feature = ({ title, description, index }) => {
   return (
     <div
-      className={`flex flex-col py-10 relative group/feature border-white/10 lg:border-r
+      // FIXED: Kept the top padding but reduced the bottom padding on the individual cards
+      className={`flex flex-col pt-10 pb-6 relative group/feature border-white/10 lg:border-r
         ${index === 0 || index === 4 ? "lg:border-l" : ""}
         ${index < 4 ? "lg:border-b" : ""}
       `}

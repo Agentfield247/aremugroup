@@ -89,39 +89,43 @@ export default function Home() {
         </section>
 
         {/* =========================================
-            ABOUT SECTION (Video + Text + Orbital Timeline)
-           ========================================= */}
-        <AboutSection />
-
-        {/* =========================================
-            DASHBOARD SECTION (3D Container Scroll)
-           ========================================= */}
-
-        <ContainerScroll
-          titleComponent={
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">
-              Unleash the power of <br />
-              <span className="text-gray-400 text-3xl md:text-4xl">
-                AI-Driven Operations
-              </span>
-            </h2>
-          }
-        >
-          {/* We wrap the dashboard in a div so it perfectly fills the 3D card container */}
-          <div className="w-full h-[600px] sm:h-[700px] md:h-full p-2 md:p-4 bg-black rounded-2xl">
-            <MockDashboard />
-          </div>
-        </ContainerScroll>
-
-        {/* =========================================
-            GLOBAL REACH SECTION (Map)
-           ========================================= */}
-        <GlobalReach />
-
-        {/* =========================================
-                    TESTIMONIALS SECTION (NEW!)
+                    PAGE CONTENT WRAPPER
                    ========================================= */}
-        <Testimonials />
+        <div className="flex flex-col">
+          <div className="z-30 relative">
+            <AboutSection />
+          </div>
+
+          {/* DASHBOARD SECTION
+                      FIXED: Removed negative margins, added pt-10 to push it down safely away from the button above it.
+                  */}
+          <div className="pt-10 md:pt-0 z-20 relative">
+            <ContainerScroll
+              titleComponent={
+                <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 md:mb-8">
+                  Unleash the power of <br />
+                  <span className="text-gray-400 text-3xl md:text-4xl">
+                    AI-Driven Operations
+                  </span>
+                </h2>
+              }
+            >
+              <div className="w-full h-[500px] sm:h-[600px] md:h-full p-2 md:p-4 bg-black rounded-2xl">
+                <MockDashboard />
+              </div>
+            </ContainerScroll>
+          </div>
+
+          {/* GLOBAL REACH (Our Projects) SECTION */}
+          <div className="z-10 relative">
+            <GlobalReach />
+          </div>
+
+          {/* TESTIMONIALS SECTION */}
+          <div className="z-10 relative">
+            <Testimonials />
+          </div>
+        </div>
       </main>
 
       <Footer />

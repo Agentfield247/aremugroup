@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   // State for active tab and mobile menu toggle
@@ -23,11 +24,11 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-8 py-4 md:py-5 text-white bg-black/20 md:bg-transparent backdrop-blur-md md:backdrop-blur-none border-b border-white/5 md:border-none">
       {/* 1. Left: Logo Section */}
-      <div className="flex items-center cursor-pointer z-50">
+      <Link to="/" className="flex items-center cursor-pointer z-50">
         <span className="text-xl md:text-2xl font-bold tracking-tight">
           AIL.
         </span>
-      </div>
+      </Link>
 
       {/* 2. Center: Desktop Glassmorphism Navigation */}
       <div className="hidden md:flex items-center bg-[#1a1a1a]/60 backdrop-blur-md border border-white/10 rounded-full p-1 absolute left-1/2 transform -translate-x-1/2 z-50">

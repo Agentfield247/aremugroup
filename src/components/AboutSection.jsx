@@ -99,7 +99,8 @@ export default function AboutSection() {
   return (
     <section
       id="about-video"
-      className="relative w-full min-h-screen bg-black border-t border-white/10 flex flex-col items-center justify-start px-4 md:px-12 lg:px-24 py-20 md:py-32 overflow-hidden z-10 gap-16 md:gap-24"
+      // FIXED: Removed min-h-screen for mobile, reduced padding to py-10, reduced gap to gap-8
+      className="relative w-full md:min-h-screen bg-black border-t border-white/10 flex flex-col items-center justify-start px-4 md:px-12 lg:px-24 py-10 md:py-32 overflow-hidden z-10 gap-8 md:gap-24"
     >
       {/* 1. TOP SECTION: Cinematic Video Player */}
       <div className="w-full max-w-[1400px] mx-auto z-20">
@@ -112,9 +113,10 @@ export default function AboutSection() {
       </div>
 
       {/* 2. BOTTOM SECTION: Text and Timeline Split */}
-      <div className="flex flex-col-reverse lg:flex-row items-center justify-between w-full max-w-7xl mx-auto gap-12 md:gap-8 mt-10">
+      {/* FIXED: Reduced mt-10 to mt-2 on mobile */}
+      <div className="flex flex-col-reverse lg:flex-row items-center justify-between w-full max-w-7xl mx-auto gap-8 md:gap-8 mt-2 md:mt-10">
         {/* Left Column: Text Content */}
-        <div className="w-full lg:w-1/2 space-y-6 z-20 lg:pr-10 text-center lg:text-left">
+        <div className="w-full lg:w-1/2 space-y-4 md:space-y-6 z-20 lg:pr-10 text-center lg:text-left">
           <h3 className="text-2xl md:text-4xl font-bold tracking-tight text-white drop-shadow-lg">
             Transforming Ideas Into <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500">
@@ -122,7 +124,7 @@ export default function AboutSection() {
             </span>
           </h3>
 
-          <div className="space-y-4 text-base md:text-lg text-gray-400 leading-relaxed max-w-xl mx-auto lg:mx-0">
+          <div className="space-y-4 text-sm md:text-lg text-gray-400 leading-relaxed max-w-xl mx-auto lg:mx-0">
             <p>
               At Aremu Group, we transform ideas into fully operational
               businesses. Through a governed, transparent system, we protect
@@ -133,7 +135,8 @@ export default function AboutSection() {
             </p>
           </div>
 
-          <div className="pt-4 pb-12 lg:pb-0">
+          {/* FIXED: Reduced pb-12 to pb-4 on mobile */}
+          <div className="pt-4 pb-4 lg:pb-0">
             <a
               href="/about"
               className="inline-flex items-center justify-center px-8 py-3 rounded-full text-sm font-semibold bg-white text-black hover:bg-gray-200 hover:scale-105 transition-all duration-200 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
@@ -159,7 +162,8 @@ export default function AboutSection() {
         </div>
 
         {/* Right Column: Interactive Orbital Timeline */}
-        <div className="w-full lg:w-1/2 h-[450px] sm:h-[550px] relative z-10 flex items-center justify-center">
+        {/* FIXED: Reduced height slightly for mobile so it takes up less space */}
+        <div className="w-full lg:w-1/2 h-[380px] sm:h-[550px] relative z-10 flex items-center justify-center">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.05)_0%,_transparent_70%)] pointer-events-none"></div>
           <RadialOrbitalTimeline timelineData={aremuDepartments} />
         </div>
